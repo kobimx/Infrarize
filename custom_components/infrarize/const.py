@@ -1,4 +1,4 @@
-"""Constants for the SmartIR config flow and platforms."""
+"""Constants for the Infrarize config flow and platforms."""
 from __future__ import annotations
 
 # ── Sentinels ──────────────────────────────────────────────────────────────────
@@ -38,10 +38,10 @@ PLATFORM_SUBDIR: dict[str, str] = {
 }
 
 DEFAULT_DEVICE_NAMES: dict[str, str] = {
-    "climate":      "SmartIR Climate",
-    "fan":          "SmartIR Fan",
-    "media_player": "SmartIR Media Player",
-    "light":        "SmartIR Light",
+    "climate":      "Infrarize Climate",
+    "fan":          "Infrarize Fan",
+    "media_player": "Infrarize Media Player",
+    "light":        "Infrarize Light",
 }
 
 # ── Controller metadata ────────────────────────────────────────────────────────

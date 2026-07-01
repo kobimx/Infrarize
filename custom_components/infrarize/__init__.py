@@ -18,16 +18,16 @@ from homeassistant.helpers.typing import ConfigType
 
 _LOGGER = logging.getLogger(__name__)
 
-DOMAIN = 'smartir'
+DOMAIN = 'infrarize'
 VERSION = '1.18.1'
 MANIFEST_URL = (
     "https://raw.githubusercontent.com/"
-    "kobimx/SmartIR/{}/"
-    "custom_components/smartir/manifest.json")
+    "kobimx/Infrarize/{}/"
+    "custom_components/infrarize/manifest.json")
 REMOTE_BASE_URL = (
     "https://raw.githubusercontent.com/"
-    "kobimx/SmartIR/{}/"
-    "custom_components/smartir/")
+    "kobimx/Infrarize/{}/"
+    "custom_components/infrarize/")
 COMPONENT_ABS_DIR = os.path.dirname(
     os.path.abspath(__file__))
 
@@ -43,7 +43,7 @@ CONFIG_SCHEMA = vol.Schema({
 }, extra=vol.ALLOW_EXTRA)
 
 async def async_setup(hass, config):
-    """Set up the SmartIR component."""
+    """Set up the Infrarize component."""
     conf = config.get(DOMAIN)
 
     if conf is None:
@@ -68,7 +68,7 @@ async def async_setup(hass, config):
 
 
 async def async_setup_entry(hass, entry):
-    """Set up SmartIR from a config entry (UI-configured device)."""
+    """Set up Infrarize from a config entry (UI-configured device)."""
     platform = entry.data.get('platform')
     if not platform:
         return False
@@ -85,7 +85,7 @@ async def _async_options_updated(hass, entry):
 
 
 async def async_unload_entry(hass, entry):
-    """Unload a SmartIR config entry."""
+    """Unload an Infrarize config entry."""
     platform = entry.data.get('platform')
     if not platform:
         return True
@@ -106,21 +106,21 @@ async def _update(hass, branch, do_update=False, notify_if_latest=True):
                         if notify_if_latest:
                             hass.components.persistent_notification.async_create(
                                 "You're already using the latest version!", 
-                                title='SmartIR')
+                                title='Infrarize')
                         return
 
                     if StrictVersion(current_ha_version) < StrictVersion(min_ha_version):
                         hass.components.persistent_notification.async_create(
-                            "There is a new version of SmartIR integration, but it is **incompatible** "
-                            "with your system. Please first update Home Assistant.", title='SmartIR')
+                            "There is a new version of Infrarize integration, but it is **incompatible** "
+                            "with your system. Please first update Home Assistant.", title='Infrarize')
                         return
 
                     if do_update is False:
                         hass.components.persistent_notification.async_create(
-                            "A new version of SmartIR integration is available ({}). "
-                            "Call the ``smartir.update_component`` service to update "
+                            "A new version of Infrarize integration is available ({}). "
+                            "Call the ``infrarize.update_component`` service to update "
                             "the integration. \n\n **Release notes:** \n{}"
-                            .format(last_version, release_notes), title='SmartIR')
+                            .format(last_version, release_notes), title='Infrarize')
                         return
 
                     # Begin update
@@ -139,12 +139,12 @@ async def _update(hass, branch, do_update=False, notify_if_latest=True):
 
                     if has_errors:
                         hass.components.persistent_notification.async_create(
-                            "There was an error updating one or more files of SmartIR. "
-                            "Please check the logs for more information.", title='SmartIR')
+                            "There was an error updating one or more files of Infrarize. "
+                            "Please check the logs for more information.", title='Infrarize')
                     else:
                         hass.components.persistent_notification.async_create(
                             "Successfully updated to {}. Please restart Home Assistant."
-                            .format(last_version), title='SmartIR')
+                            .format(last_version), title='Infrarize')
     except Exception:
        _LOGGER.error("An error occurred while checking for updates.")
 

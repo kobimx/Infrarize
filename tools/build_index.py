@@ -4,7 +4,7 @@
 Run from the repo root:
     python tools/build_index.py
 
-Outputs:  custom_components/smartir/codes_index.json
+Outputs:  custom_components/infrarize/codes_index.json
 """
 import json
 import os
@@ -16,7 +16,7 @@ _TOOLS_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.dirname(_TOOLS_DIR)
 CODES_DIR = os.path.join(REPO_ROOT, "codes")
 OUTPUT_FILE = os.path.join(
-    REPO_ROOT, "custom_components", "smartir", "codes_index.json"
+    REPO_ROOT, "custom_components", "infrarize", "codes_index.json"
 )
 
 

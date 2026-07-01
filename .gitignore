@@ -131,5 +131,5 @@ dmypy.json
 temp/
 tmp/
 
-# SmartIR capture tool session (contains local MQTT credentials/config)
+# Infrarize capture tool session (contains local MQTT credentials/config)
 tools/capture_session.json

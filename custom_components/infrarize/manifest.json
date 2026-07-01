@@ -1,7 +1,7 @@
 {
-  "domain": "smartir",
-  "name": "SmartIR",
-  "documentation": "https://github.com/kobimx/SmartIR",
+  "domain": "infrarize",
+  "name": "Infrarize",
+  "documentation": "https://github.com/kobimx/Infrarize",
   "dependencies": [],
   "codeowners": ["@kobimx"],
   "requirements": ["aiofiles>=0.6.0"],

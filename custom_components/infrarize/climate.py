@@ -21,7 +21,7 @@ from .controller import get_controller
 
 _LOGGER = logging.getLogger(__name__)
 
-DEFAULT_NAME = "SmartIR Climate"
+DEFAULT_NAME = "Infrarize Climate"
 DEFAULT_DELAY = 0.5
 
 CONF_UNIQUE_ID = 'unique_id'
@@ -54,7 +54,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    """Set up SmartIR Climate from a config entry."""
+    """Set up Infrarize Climate from a config entry."""
     config = {**entry.data, **entry.options}
     config.pop('platform', None)
     config.setdefault('unique_id', entry.unique_id)
@@ -63,7 +63,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up the IR Climate platform."""
-    _LOGGER.debug("Setting up the smartir platform")
+    _LOGGER.debug("Setting up the infrarize platform")
     device_code = config.get(CONF_DEVICE_CODE)
     device_files_subdir = os.path.join('codes', 'climate')
     device_files_absdir = os.path.join(COMPONENT_ABS_DIR, device_files_subdir)
@@ -80,7 +80,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
         try:
             codes_source = ("https://raw.githubusercontent.com/"
-                            "kobimx/SmartIR/master/"
+                            "kobimx/Infrarize/master/"
                             "codes/climate/{}.json")
 
             await Helper.downloader(codes_source.format(device_code), device_json_path)
@@ -101,13 +101,13 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         _LOGGER.error("The device JSON file is invalid")
         return
 
-    async_add_entities([SmartIRClimate(
+    async_add_entities([InfrarizeClimate(
         hass, config, device_data
     )])
 
-class SmartIRClimate(ClimateEntity, RestoreEntity):
+class InfrarizeClimate(ClimateEntity, RestoreEntity):
     def __init__(self, hass, config, device_data):
-        _LOGGER.debug(f"SmartIRClimate init started for device {config.get(CONF_NAME)} supported models {device_data['supportedModels']}")
+        _LOGGER.debug(f"InfrarizeClimate init started for device {config.get(CONF_NAME)} supported models {device_data['supportedModels']}")
         self.hass = hass
         self._unique_id = config.get(CONF_UNIQUE_ID)
         self._name = config.get(CONF_NAME)

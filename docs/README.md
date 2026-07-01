@@ -1,15 +1,13 @@
-[![](https://img.shields.io/github/v/release/kobimx/SmartIR.svg?style=flat-square)](https://github.com/kobimx/SmartIR/releases/latest) [![](https://img.shields.io/badge/HACS-Custom-orange.svg?style=flat-square)](https://github.com/custom-components/hacs)
+[![](https://img.shields.io/github/v/release/kobimx/Infrarize.svg?style=flat-square)](https://github.com/kobimx/Infrarize/releases/latest) [![](https://img.shields.io/badge/HACS-Custom-orange.svg?style=flat-square)](https://github.com/custom-components/hacs)
 
-> ### ⚠️ Warning  
-> You are free to fork, modify, and use the code in this repository in accordance with the applicable open-source license.  
->  
-> **However, the name "SmartIR" must not be used in any capacity**, especially for promoting, rebranding, or distributing your own fork or derivative works.  
->  
-> Please respect this guideline to preserve the original project's identity.
+> ### ⚠️ Notice
+> This project is a fork of [SmartIR](https://github.com/smartHomeHub/SmartIR), rebranded as **Infrarize** in compliance with the original project's guideline that its name not be used for forks or derivative works.
+>
+> Full credit to the original SmartIR authors and community for the underlying design and device code database.
 
 ## Overview
-SmartIR is a custom integration for controlling **climate devices**, **media players**, **fans** and **lights** via infrared controllers.<br>
-SmartIR currently supports the following controllers:
+Infrarize is a custom integration for controlling **climate devices**, **media players**, **fans** and **lights** via infrared controllers.<br>
+Infrarize currently supports the following controllers:
 * [Broadlink](https://www.home-assistant.io/integrations/broadlink/)
 * [Xiaomi IR Remote (ChuangmiIr)](https://www.home-assistant.io/integrations/remote.xiaomi_miio/)
 * [LOOK.in Remote](http://look-in.club/devices/remote)
@@ -27,7 +25,7 @@ It should look similar to this:
 ```
 <config directory>/
 |-- custom_components/
-|   |-- smartir/
+|   |-- infrarize/
 |       |-- __init__.py
 |       |-- climate.py
 |       |-- fan.py
@@ -37,25 +35,25 @@ It should look similar to this:
 ```
 **(2)** Add the following to your configuration.yaml file.
 ```yaml
-smartir:
+infrarize:
 ```
 
-SmartIR automatically detects updates after each HA startup and asks you to install them. It also has a mechanism that prevents you from updating if the last SmartIR version is incompatible with your HA instance. You can disable this feature by setting SmartIR as follows:
+Infrarize automatically detects updates after each HA startup and asks you to install them. It also has a mechanism that prevents you from updating if the last Infrarize version is incompatible with your HA instance. You can disable this feature by setting Infrarize as follows:
 ```yaml
-smartir:
+infrarize:
   check_updates: false
 ```
 
-If you would like to get updates from the rc branch (Release Candidate), configure SmartIR as follows:
+If you would like to get updates from the rc branch (Release Candidate), configure Infrarize as follows:
 ```yaml
-smartir:
+infrarize:
   update_branch: rc
 ```
 
 **(3)** Configure a platform.
 
 ### *HACS*
-If you want HACS to handle installation and updates, add SmartIR as a [custom repository](https://hacs.xyz/docs/faq/custom_repositories/). In this case, it is recommended that you turn off automatic updates, as above.
+If you want HACS to handle installation and updates, add Infrarize as a [custom repository](https://hacs.xyz/docs/faq/custom_repositories/). In this case, it is recommended that you turn off automatic updates, as above.
 <br><br>
 
 
@@ -68,4 +66,4 @@ Click on the links below for instructions on how to configure each platform.
 <br><br>
 
 ## See also
-* [Discussion about SmartIR Climate (Home Assistant Community)](https://community.home-assistant.io/t/smartir-control-your-climate-tv-and-fan-devices-via-ir-rf-controllers/)
+* [Discussion about the original SmartIR project (Home Assistant Community)](https://community.home-assistant.io/t/smartir-control-your-climate-tv-and-fan-devices-via-ir-rf-controllers/) — useful background on climate/TV/fan IR control patterns; not specific to this fork.

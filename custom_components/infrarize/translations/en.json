@@ -2,49 +2,49 @@
   "config": {
     "step": {
       "user": {
-        "title": "SmartIR — Choose Platform",
+        "title": "Infrarize — Choose Platform",
         "description": "Select the type of device you want to control via IR.",
         "data": {
           "platform": "Platform"
         }
       },
       "controller_filter": {
-        "title": "SmartIR — Filter by Controller",
+        "title": "Infrarize — Filter by Controller",
         "description": "Narrow the device list to a specific controller type, or show all.",
         "data": {
           "controller_type": "Controller Type"
         }
       },
       "manufacturer": {
-        "title": "SmartIR — Select Manufacturer",
+        "title": "Infrarize — Select Manufacturer",
         "description": "Choose your device manufacturer. Select **'Enter code manually'** if your device is not listed.",
         "data": {
           "manufacturer": "Manufacturer"
         }
       },
       "device_select": {
-        "title": "SmartIR — Select Device",
+        "title": "Infrarize — Select Device",
         "description": "Choose the device model for **{manufacturer}**. Each entry shows the numeric code and supported model names.",
         "data": {
           "device_code": "Device"
         }
       },
       "device_manual": {
-        "title": "SmartIR — Enter Device Code",
+        "title": "Infrarize — Enter Device Code",
         "description": "Enter the numeric device code. The file will be loaded from local storage or downloaded from GitHub.",
         "data": {
           "device_code": "Device Code"
         }
       },
       "device_name": {
-        "title": "SmartIR — Confirm Device Name",
+        "title": "Infrarize — Confirm Device Name",
         "description": "**{manufacturer}** — {models}\nController: {controller_type}  |  Code: {device_code}\n\nEdit the name shown in Home Assistant.",
         "data": {
           "name": "Device Name"
         }
       },
       "controller": {
-        "title": "SmartIR — Controller Connection",
+        "title": "Infrarize — Controller Connection",
         "description": "Controller type: **{controller_type}**\n\n{controller_hint}",
         "data": {
           "controller_data": "Controller Data",
@@ -52,7 +52,7 @@
         }
       },
       "options_platform": {
-        "title": "SmartIR — Optional Settings",
+        "title": "Infrarize — Optional Settings",
         "description": "**{manufacturer}** — {models}\nController: {controller_type}\n\nAll fields below are optional.",
         "data": {
           "temperature_sensor": "Temperature Sensor",
@@ -70,13 +70,13 @@
       "unknown": "Unexpected error — check the Home Assistant logs."
     },
     "abort": {
-      "already_configured": "A SmartIR device with this code and controller is already configured."
+      "already_configured": "A Infrarize device with this code and controller is already configured."
     }
   },
   "options": {
     "step": {
       "controller": {
-        "title": "SmartIR — Edit Controller",
+        "title": "Infrarize — Edit Controller",
         "description": "Controller type: **{controller_type}**\n\n{controller_hint}",
         "data": {
           "controller_data": "Controller Data",
@@ -84,7 +84,7 @@
         }
       },
       "options_platform": {
-        "title": "SmartIR — Edit Optional Settings",
+        "title": "Infrarize — Edit Optional Settings",
         "description": "**{manufacturer}** — {models}\nController: {controller_type}",
         "data": {
           "temperature_sensor": "Temperature Sensor",

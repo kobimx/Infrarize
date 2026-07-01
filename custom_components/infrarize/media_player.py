@@ -19,7 +19,7 @@ from .controller import get_controller
 
 _LOGGER = logging.getLogger(__name__)
 
-DEFAULT_NAME = "SmartIR Media Player"
+DEFAULT_NAME = "Infrarize Media Player"
 DEFAULT_DEVICE_CLASS = "tv"
 DEFAULT_DELAY = 0.5
 
@@ -44,7 +44,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    """Set up SmartIR Media Player from a config entry."""
+    """Set up Infrarize Media Player from a config entry."""
     config = {**entry.data, **entry.options}
     config.pop('platform', None)
     config.setdefault('unique_id', entry.unique_id)
@@ -69,7 +69,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
         try:
             codes_source = ("https://raw.githubusercontent.com/"
-                            "kobimx/SmartIR/master/"
+                            "kobimx/Infrarize/master/"
                             "codes/media_player/{}.json")
 
             await Helper.downloader(codes_source.format(device_code), device_json_path)
@@ -90,11 +90,11 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         _LOGGER.error("The device JSON file is invalid")
         return
 
-    async_add_entities([SmartIRMediaPlayer(
+    async_add_entities([InfrarizeMediaPlayer(
         hass, config, device_data
     )])
 
-class SmartIRMediaPlayer(MediaPlayerEntity, RestoreEntity):
+class InfrarizeMediaPlayer(MediaPlayerEntity, RestoreEntity):
     def __init__(self, hass, config, device_data):
         self.hass = hass
         self._unique_id = config.get(CONF_UNIQUE_ID)

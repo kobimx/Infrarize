@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-SmartIR IR Code Capture Tool
-Captures IR codes via zigbee2mqtt (iH-F8260) and builds SmartIR-compatible JSON files.
+Infrarize IR Code Capture Tool
+Captures IR codes via zigbee2mqtt (iH-F8260) and builds Infrarize-compatible JSON files.
 
 Requires: paho-mqtt  (pip install paho-mqtt)
 """
@@ -36,7 +36,7 @@ _SKIPPED = "__skipped__"
 # ---------------------------------------------------------------------------
 
 def gen_temps(min_t: float, max_t: float, precision: float) -> list:
-    """Generate temperature key strings matching SmartIR JSON format."""
+    """Generate temperature key strings matching Infrarize JSON format."""
     temps = []
     t = min_t
     while round(t, 6) <= round(max_t, 6):
@@ -132,11 +132,11 @@ class _Tooltip:
 # Main App
 # ---------------------------------------------------------------------------
 
-class SmartIRCapture(tk.Tk):
+class InfrarizeCapture(tk.Tk):
 
     def __init__(self):
         super().__init__()
-        self.title("SmartIR IR Code Capture")
+        self.title("Infrarize IR Code Capture")
         self.geometry("960x700")
         self.minsize(820, 600)
 
@@ -252,8 +252,8 @@ class SmartIRCapture(tk.Tk):
             "fan_modes": (
                 "Fan Modes",
                 "Free-form strings — use any names your remote supports.\n"
-                "SmartIR passes them through as-is to Home Assistant.\n\n"
-                "Common values used in existing SmartIR codes:\n"
+                "Infrarize passes them through as-is to Home Assistant.\n\n"
+                "Common values used in existing Infrarize codes:\n"
                 "  auto       — Automatic fan speed\n"
                 "  quiet      — Quiet / silent\n"
                 "  low        — Low speed\n"
@@ -268,8 +268,8 @@ class SmartIRCapture(tk.Tk):
             "swing_modes": (
                 "Swing Modes",
                 "Free-form strings — optional. Leave empty if your remote has no swing.\n"
-                "SmartIR passes them through as-is to Home Assistant.\n\n"
-                "Common values used in existing SmartIR codes:\n"
+                "Infrarize passes them through as-is to Home Assistant.\n\n"
+                "Common values used in existing Infrarize codes:\n"
                 "  auto                  — Automatic swing\n"
                 "  swing                 — Continuous swing\n"
                 "  horizontal            — Horizontal vane only\n"
@@ -894,7 +894,7 @@ class SmartIRCapture(tk.Tk):
         combo = self._current_combo()
         if not combo or not self.pending_code:
             return
-        # SmartIR MQTT controller publishes the command string verbatim as payload.
+        # Infrarize MQTT controller publishes the command string verbatim as payload.
         # zigbee2mqtt expects {"ir_code_to_send": "..."} on the /set topic.
         stored = json.dumps({"ir_code_to_send": self.pending_code})
         self.session.setdefault("codes", {})[combo_key(combo)] = stored
@@ -1082,7 +1082,7 @@ class SmartIRCapture(tk.Tk):
     def _browse_export_path(self):
         initial = CODES_DIR if CODES_DIR.exists() else TOOLS_DIR.parent
         path = filedialog.asksaveasfilename(
-            title="Export SmartIR JSON",
+            title="Export Infrarize JSON",
             initialdir=initial,
             defaultextension=".json",
             filetypes=[("JSON", "*.json")],
@@ -1237,7 +1237,7 @@ class SmartIRCapture(tk.Tk):
 # ---------------------------------------------------------------------------
 
 def main():
-    app = SmartIRCapture()
+    app = InfrarizeCapture()
     app.mainloop()
 
 

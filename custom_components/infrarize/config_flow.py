@@ -1,4 +1,4 @@
-"""Config flow for SmartIR — 6-step UI wizard with device list selection."""
+"""Config flow for Infrarize — 6-step UI wizard with device list selection."""
 from __future__ import annotations
 
 import json
@@ -47,7 +47,7 @@ from .const import (
     PLATFORMS,
 )
 
-DOMAIN = "smartir"
+DOMAIN = "infrarize"
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -63,7 +63,7 @@ async def _load_device_json(platform: str, device_code: int) -> dict | None:
     if not os.path.exists(path):
         source = (
             "https://raw.githubusercontent.com/"
-            f"kobimx/SmartIR/master/codes/{subdir}/{device_code}.json"
+            f"kobimx/Infrarize/master/codes/{subdir}/{device_code}.json"
         )
         try:
             await Helper.downloader(source, path)
@@ -120,7 +120,7 @@ def _options_schema(platform: str, defaults: dict | None = None) -> vol.Schema:
         return vol.Optional(key)
 
     # Power sensors are only ever checked for on/off state (see
-    # SmartIRClimate._async_power_sensor_changed and the equivalent methods in
+    # InfrarizeClimate._async_power_sensor_changed and the equivalent methods in
     # fan.py, light.py, media_player.py, which compare .state to STATE_ON/STATE_OFF)
     # so restrict the picker to domains that expose a binary on/off state.
     power_sensor_selector = EntitySelector(
@@ -237,8 +237,8 @@ def _device_placeholders(device_data: dict, platform: str) -> dict:
 # ── Config Flow ───────────────────────────────────────────────────────────────
 
 
-class SmartIRConfigFlow(ConfigFlow, domain=DOMAIN):
-    """Handle multi-step UI config flow for SmartIR."""
+class InfrarizeConfigFlow(ConfigFlow, domain=DOMAIN):
+    """Handle multi-step UI config flow for Infrarize."""
 
     VERSION = 1
 
@@ -518,7 +518,7 @@ class SmartIRConfigFlow(ConfigFlow, domain=DOMAIN):
                     self._delay = DEFAULT_DELAY
 
                 uid = (
-                    f"smartir_{self._platform}_{self._device_code}"
+                    f"infrarize_{self._platform}_{self._device_code}"
                     f"_{self._controller_data}"
                 )
                 await self.async_set_unique_id(uid)
@@ -576,21 +576,21 @@ class SmartIRConfigFlow(ConfigFlow, domain=DOMAIN):
         }
         options.update(_parse_options(self._platform, options_input))
 
-        mfr = self._device_data.get("manufacturer", "SmartIR")
+        mfr = self._device_data.get("manufacturer", "Infrarize")
         title = f"{mfr} — {self._device_name}"
         return self.async_create_entry(title=title, data=data, options=options)
 
     @staticmethod
     @callback
-    def async_get_options_flow(config_entry: ConfigEntry) -> SmartIROptionsFlow:
-        return SmartIROptionsFlow(config_entry)
+    def async_get_options_flow(config_entry: ConfigEntry) -> InfrarizeOptionsFlow:
+        return InfrarizeOptionsFlow(config_entry)
 
 
 # ── Options Flow ──────────────────────────────────────────────────────────────
 
 
-class SmartIROptionsFlow(OptionsFlow):
-    """Edit controller and sensor settings for an existing SmartIR entry."""
+class InfrarizeOptionsFlow(OptionsFlow):
+    """Edit controller and sensor settings for an existing Infrarize entry."""
 
     def __init__(self, config_entry: ConfigEntry) -> None:
         self._entry = config_entry
