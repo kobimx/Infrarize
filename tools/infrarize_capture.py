@@ -333,6 +333,23 @@ class InfrarizeCapture(tk.Tk):
         modes_row(modes_frame, 3, "Single-code modes:", "single_code_modes", "dry, fan_only")
         modes_row(modes_frame, 4, "Excluded modes:",    "excluded_modes",    "")
 
+        ttk.Separator(modes_frame).grid(row=5, column=0, columnspan=3, sticky="ew", pady=(8, 4))
+
+        estimate_frame = ttk.Frame(modes_frame)
+        estimate_frame.grid(row=6, column=0, columnspan=3, sticky="ew")
+        estimate_frame.columnconfigure(0, weight=1)
+
+        self._estimate_var = tk.StringVar(value="Estimated codes to capture: —")
+        ttk.Label(estimate_frame, textvariable=self._estimate_var, foreground="steelblue").grid(
+            row=0, column=0, sticky="w")
+        ttk.Button(estimate_frame, text="📉  Apply Realistic Minimum",
+                   command=self._do_apply_realistic_minimum).grid(row=0, column=1, sticky="e")
+
+        for _key in ("op_modes", "fan_modes", "swing_modes", "single_code_modes",
+                     "excluded_modes", "min_temp", "max_temp", "precision"):
+            self._sv[_key].trace_add("write", self._update_estimate_label)
+        self._update_estimate_label()
+
         # ── Actions ──
         btn_frame = ttk.Frame(tab)
         btn_frame.grid(row=2, column=0, columnspan=2, sticky="ew", pady=(4, 0))
@@ -650,6 +667,125 @@ class InfrarizeCapture(tk.Tk):
             return None
 
     # ─────────────────────────────────────────────────────────────────────────
+    # Realistic Minimum preset / live estimate
+    # ─────────────────────────────────────────────────────────────────────────
+
+    def _split_csv(self, key: str) -> list:
+        raw = self._sv[key].get().strip()
+        return [m.strip() for m in raw.split(",") if m.strip()] if raw else []
+
+    def _read_temp_config(self) -> dict | None:
+        try:
+            min_t = float(self._sv["min_temp"].get().strip())
+            max_t = float(self._sv["max_temp"].get().strip())
+            prec  = float(self._sv["precision"].get().strip())
+            if min_t >= max_t or prec <= 0:
+                return None
+            return {"minTemperature": min_t, "maxTemperature": max_t, "precision": prec}
+        except Exception:
+            return None
+
+    def _count_combos(self, op_modes, fan_modes, swing_modes,
+                       single_code_modes, excluded_modes) -> int | None:
+        base = self._read_temp_config()
+        if base is None or not op_modes or not fan_modes:
+            return None
+        cfg = dict(base)
+        cfg.update({
+            "operationModes": op_modes,
+            "fanModes": fan_modes,
+            "swingModes": swing_modes,
+            "singleCodeModes": single_code_modes,
+            "excludedModes": excluded_modes,
+        })
+        return len(build_combos(cfg))  # includes the 'off' entry
+
+    def _valid_codes(self) -> dict:
+        """Codes matching a combo in the current combo set, dropping stale entries left over from a differently-configured session."""
+        valid_keys = {combo_key(c) for c in self.combos}
+        return {k: v for k, v in self.session.get("codes", {}).items() if k in valid_keys}
+
+    def _estimate_combo_count(self) -> int | None:
+        return self._count_combos(
+            self._split_csv("op_modes"), self._split_csv("fan_modes"),
+            self._split_csv("swing_modes"), self._split_csv("single_code_modes"),
+            self._split_csv("excluded_modes"),
+        )
+
+    def _update_estimate_label(self, *_args):
+        n = self._estimate_combo_count()
+        if n is None:
+            self._estimate_var.set("Estimated codes to capture: — (check fields)")
+        else:
+            self._estimate_var.set(f"Estimated codes to capture: {n} (incl. 1 for OFF)")
+
+    def _do_apply_realistic_minimum(self):
+        op_modes, fan_modes = self._split_csv("op_modes"), self._split_csv("fan_modes")
+        swing_modes = self._split_csv("swing_modes")
+        cur_single = set(self._split_csv("single_code_modes"))
+        cur_excluded = set(self._split_csv("excluded_modes"))
+
+        if not op_modes or not fan_modes:
+            messagebox.showwarning("Realistic Minimum", "Fill in Operation modes and Fan modes first.")
+            return
+
+        before = self._count_combos(op_modes, fan_modes, swing_modes, list(cur_single), list(cur_excluded))
+
+        op_lower = {m.lower(): m for m in op_modes}
+        new_excluded = set(cur_excluded)
+        for cand in self._REALISTIC_EXCLUDE_CANDIDATES:
+            if cand in op_lower:
+                new_excluded.add(op_lower[cand])
+
+        new_single = set(cur_single)
+        for cand in self._REALISTIC_SINGLE_CODE_CANDIDATES:
+            if cand in op_lower and op_lower[cand] not in new_excluded:
+                new_single.add(op_lower[cand])
+
+        new_swing = list(swing_modes)
+        if len(swing_modes) > 1:
+            auto_match = next((s for s in swing_modes if s.strip().lower() == "auto"), None)
+            new_swing = [auto_match] if auto_match else [swing_modes[0]]
+
+        after = self._count_combos(op_modes, fan_modes, new_swing, list(new_single), list(new_excluded))
+
+        if before is None or after is None:
+            messagebox.showerror(
+                "Realistic Minimum",
+                "Could not estimate combos — check Min/Max temperature and Precision fields.",
+            )
+            return
+
+        if new_excluded == cur_excluded and new_single == cur_single and new_swing == swing_modes:
+            messagebox.showinfo("Realistic Minimum", "Your setup is already at the realistic minimum — no changes needed.")
+            return
+
+        pct = round(100 * (1 - after / before)) if before else 0
+        lines = [
+            "This will apply the following changes for a leaner capture session:",
+            "",
+            f"• Excluded modes:      {', '.join(sorted(new_excluded)) or '—'}",
+            f"• Single-code modes:   {', '.join(sorted(new_single)) or '—'}",
+        ]
+        if new_swing != swing_modes:
+            lines.append(f"• Swing modes reduced to: {new_swing[0]}")
+        lines += [
+            "",
+            f"Estimated codes to capture: {before} → {after}  ({pct}% fewer)",
+            "",
+            "Apply now? You can still edit any field manually afterward.",
+        ]
+
+        if not messagebox.askyesno("Apply Realistic Minimum", "\n".join(lines)):
+            return
+
+        self._sv["excluded_modes"].set(", ".join(sorted(new_excluded)))
+        self._sv["single_code_modes"].set(", ".join(sorted(new_single)))
+        if new_swing != swing_modes:
+            self._sv["swing_modes"].set(", ".join(new_swing))
+        self._log(f"[INFO] Applied realistic-minimum preset: {before} → {after} codes")
+
+    # ─────────────────────────────────────────────────────────────────────────
     # MQTT
     # ─────────────────────────────────────────────────────────────────────────
 
@@ -783,6 +919,11 @@ class InfrarizeCapture(tk.Tk):
         "turbo":     "Turbo / boost",
     }
 
+    # Modes recommended for exclusion / single-code capture under the
+    # "Realistic Minimum" preset — rarely automated day-to-day.
+    _REALISTIC_EXCLUDE_CANDIDATES = {"auto", "heat_cool"}
+    _REALISTIC_SINGLE_CODE_CANDIDATES = {"dry", "fan_only"}
+
     def _update_capture_ui(self):
         combo = self._current_combo()
         if combo is None:
@@ -841,7 +982,7 @@ class InfrarizeCapture(tk.Tk):
 
     def _update_progress(self):
         total = len(self.combos)
-        done  = len(self.session.get("codes", {}))
+        done  = len(self._valid_codes())
         self._progress_label_var.set(f"{done} / {total}")
         self._progress_bar.configure(maximum=max(total, 1), value=done)
         # Enable back button only when there's something to go back to
@@ -1064,8 +1205,8 @@ class InfrarizeCapture(tk.Tk):
     # ─────────────────────────────────────────────────────────────────────────
 
     def _refresh_export_summary(self):
-        codes   = self.session.get("codes", {})
-        total   = len(self.combos)
+        codes    = self._valid_codes()
+        total    = len(self.combos)
         captured = sum(1 for v in codes.values() if v != _SKIPPED)
         skipped  = sum(1 for v in codes.values() if v == _SKIPPED)
         pending  = total - len(codes)
