@@ -13,7 +13,7 @@ from homeassistant.const import (
     CONF_NAME, STATE_ON, STATE_OFF, STATE_UNKNOWN, STATE_UNAVAILABLE, ATTR_TEMPERATURE,
     PRECISION_TENTHS, PRECISION_HALVES, PRECISION_WHOLE)
 from homeassistant.core import Event, EventStateChangedData, callback
-from homeassistant.helpers.event import async_track_state_change, async_track_state_change_event
+from homeassistant.helpers.event import async_track_state_change_event
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.restore_state import RestoreEntity
 from . import COMPONENT_ABS_DIR, Helper
@@ -219,7 +219,7 @@ class InfrarizeClimate(ClimateEntity, RestoreEntity):
         return HVACMode.OFF
 
     @property
-    def temperature_unit(self):
+    def native_temperature_unit(self):
         """Return the unit of measurement."""
         return self._unit
 
@@ -234,7 +234,7 @@ class InfrarizeClimate(ClimateEntity, RestoreEntity):
         return self._max_temperature
 
     @property
-    def target_temperature(self):
+    def native_target_temperature(self):
         """Return the temperature we try to reach."""
         return self._target_temperature
 
@@ -279,7 +279,7 @@ class InfrarizeClimate(ClimateEntity, RestoreEntity):
         return self._current_swing_mode
 
     @property
-    def current_temperature(self):
+    def native_current_temperature(self):
         """Return the current temperature."""
         return self._current_temperature
 
